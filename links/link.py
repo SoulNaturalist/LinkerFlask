@@ -1,13 +1,21 @@
+import os
 import random
 import asyncpg
+from dotenv import load_dotenv
 from flask import Blueprint, request, redirect
 
 link_bp = Blueprint('link', __name__, template_folder='templates')
 
+load_dotenv(dotenv_path="../.env")
+
+user = os.getenv('user')
+
+password = os.getenv('password')
+
 
 @link_bp.route('/<link>', methods=['GET'])
 async def redirect_to(link):
-    conn = await asyncpg.connect(user='postgres', password='postgres',database='linker', host='127.0.0.1')
+    conn = await asyncpg.connect(user=user, password=password,database='linker', host='127.0.0.1')
     data = await conn.fetchrow(f"SELECT * FROM urls WHERE internal_url='{link}';")
     redirect_url,number_views = data[0],data[2]
     update_number_views = await conn.fetch(f"UPDATE urls SET number_views='{number_views + 1}' WHERE internal_url='{link}';")
