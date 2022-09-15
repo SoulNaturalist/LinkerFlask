@@ -28,7 +28,7 @@ async def create():
     if data["redirect_url"]:
         redirect_url = data["redirect_url"]
         internal_url = ''.join(random.choices("qwertyuiopasdfghjklzxcvbnm",k=10))
-        conn = await asyncpg.connect(user='postgres', password='postgres',database='linker', host='127.0.0.1')
+        conn = await asyncpg.connect(user=user, password=password,database='linker', host='127.0.0.1')
         await conn.fetch(f"INSERT INTO urls (redirect_url, internal_url, number_views) VALUES ('{redirect_url}', '{internal_url}', 0);")
         await conn.close()
         return {"url":f"{internal_url}"}
